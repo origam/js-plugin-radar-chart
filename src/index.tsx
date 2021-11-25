@@ -18,3 +18,4 @@ along with ORIGAM. If not, see <http://www.gnu.org/licenses/>.
 */
 
 export { RadarChartPlugin } from './RadarChartPlugin/RadarChartPlugin';
+export { LineChartPlugin } from './LineChartPlugin/LineChartPlugin';
