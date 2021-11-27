@@ -40,6 +40,7 @@ const axisMinName = "AxisMin";
 const axisMaxName = "AxisMax";
 const stepSizeName = "StepSize";
 const labelFormatName = "LabelFormat";
+const lineColorName = "LineColor";
 
 export class LineChartPlugin implements ISectionPlugin {
   $type_ISectionPlugin: 1 = 1;
@@ -52,6 +53,7 @@ export class LineChartPlugin implements ISectionPlugin {
   axisMax: number | undefined;
   stepSize: number | undefined;
   labelFormat: string | undefined;
+  lineColor: string | undefined;
   labels: string[] = [];
 
   @observable
@@ -59,6 +61,7 @@ export class LineChartPlugin implements ISectionPlugin {
 
   initialize(xmlAttributes: { [key: string]: string }): void {
     this.seriesValueFields = this.getXmlParameter(xmlAttributes, seriesValueFieldsName);
+    this.lineColor = this.getXmlParameter(xmlAttributes, lineColorName);
     this.seriesLabelField = this.getXmlParameter(xmlAttributes, seriesLabelFieldName);
     this.noDataMessage = this.getXmlParameter(xmlAttributes, noDataMessageName);
     this.filterField = xmlAttributes[filterFieldName];
@@ -138,13 +141,13 @@ export class LineChartPlugin implements ISectionPlugin {
       .map(propertyId => 
         {
           const lineName = this.getProperty(data, propertyId.trim());
-            const index = this.seriesValueFields?.split(";").indexOf(propertyId);
-            const color = SeriesColor.getBySeriesNumber(index??0);
+            const index  = this.seriesValueFields?.split(";").indexOf(propertyId);
+            const color = this.lineColor?.split(";")[index??"#000000"];
             return {
               label:lineName.name, 
               data:  this.generateData(data, lineName.name),
-              backgroundColor: color.background,
-              borderColor: color.border,
+              backgroundColor: color,
+              borderColor: color,
               borderWidth: 1,
               radius: 0
             }
@@ -189,37 +192,4 @@ export class LineChartPlugin implements ISectionPlugin {
 
   @observable
   getScreenParameters: (() => { [parameter: string]: string }) | undefined;
-}
-
-
-class SeriesColor {
-
-  static seriesColorsRGB = [
-    new SeriesColor(255, 99, 132),
-    new SeriesColor(234, 99, 255),
-    new SeriesColor(99, 112, 255),
-    new SeriesColor(99, 252, 255),
-    new SeriesColor(168, 164, 50),
-    new SeriesColor(99, 255, 102),
-    new SeriesColor(247, 161, 0),
-  ]
-
-  static getBySeriesNumber(seriesNumber: number) {
-    return SeriesColor.seriesColorsRGB[seriesNumber % SeriesColor.seriesColorsRGB.length];
-  }
-
-  constructor(
-    private red: number,
-    private green: number,
-    private blue: number) {
-
-  }
-
-  get background() {
-    return `rgba(${this.red}, ${this.green}, ${this.blue}, 0.2)`
-  }
-
-  get border() {
-    return `rgba(${this.red}, ${this.green}, ${this.blue}, 1)`
-  }
 }
