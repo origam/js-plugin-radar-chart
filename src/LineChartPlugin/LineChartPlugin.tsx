@@ -141,13 +141,13 @@ export class LineChartPlugin implements ISectionPlugin {
       .map(propertyId => 
         {
           const lineName = this.getProperty(data, propertyId.trim());
-            const index  = this.seriesValueFields?.split(";").indexOf(propertyId);
-            const color = this.lineColor?.split(";")[index??"#000000"];
+            const index  = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
+            const color = this.lineColor?.split(";")[index]??"#000000";
             return {
               label:lineName.name, 
-              data:  this.generateData(data, lineName.name),
-              backgroundColor: color,
-              borderColor: color,
+              data:  this.generateData(data, lineName.id),
+              backgroundColor: color??0,
+              borderColor: color??0,
               borderWidth: 1,
               radius: 0
             }
