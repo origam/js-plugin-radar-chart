@@ -155,7 +155,7 @@ export class LineChartPlugin implements ISectionPlugin {
       );
 
     if (listdatasets.length === 0) {
-      return <div className={S.noDatMessageContainer}>{this.noDataMessage}</div>
+      return <div className={S.noDataMessageContainer}>{this.noDataMessage}</div>
     }
     return (
       <div className={S.chartContainer}>
@@ -183,7 +183,6 @@ export class LineChartPlugin implements ISectionPlugin {
               }
             }
           }
-
           className={S.chart}
         />
       </div>

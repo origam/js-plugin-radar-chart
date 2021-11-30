@@ -141,7 +141,7 @@ export class RadarChartPlugin implements ISectionPlugin {
         }
       })
     if (dataSets.length === 0) {
-      return <div className={S.noDatMessageContainer}>{this.noDataMessage}</div>
+      return <div className={S.noDataMessageContainer}>{this.noDataMessage}</div>
     }
     return (
       <div className={S.chartContainer}>
