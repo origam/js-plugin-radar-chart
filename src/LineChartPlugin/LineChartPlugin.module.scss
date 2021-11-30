@@ -1,9 +1,14 @@
 .chartContainer {
   flex-grow: 1;
+  position: relative;
+  margin: auto;
+  height: 95%;
+  width: 100%;
   background-color: white;
 }
   
 .noDataMessageContainer {
+  flex-grow: 1;
   margin: auto;
   padding: 10px;
 }
