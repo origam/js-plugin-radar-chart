@@ -21,7 +21,10 @@ along with ORIGAM. If not, see <http://www.gnu.org/licenses/>.
 import { observable } from "mobx";
 import React from "react";
 import S from './LineChartPlugin.module.scss';
-import { Line } from 'react-chartjs-2';
+import { Chart } from 'react-chartjs-2';
+import { Chart as ChartJS, LineController,CategoryScale,Legend, LineElement, Tooltip,PointElement, LinearScale } from 'chart.js';
+ChartJS.register(LineController, LineElement,CategoryScale, Legend,PointElement, Tooltip,LinearScale);
+
 import moment from "moment";
 import {
   ILocalization,
@@ -121,7 +124,7 @@ export class LineChartPlugin implements ISectionPlugin {
   generateData( data: IPluginData, column: string) {
     return data.dataView.tableRows
        .map(row => 
-         data.dataView.getCellText(row, column).replace(",",".") //Decimal point working only with dot.
+         data.dataView.getCellText(row, column)
          );
    }
    
@@ -159,7 +162,7 @@ export class LineChartPlugin implements ISectionPlugin {
     }
     return (
       <div className={S.chartContainer}>
-        <Line
+        <Chart type='line'
           data={{
             labels: this.labels, //x-asix values
             datasets: listdatasets,
@@ -178,7 +181,10 @@ export class LineChartPlugin implements ISectionPlugin {
                 y: {
                   beginAtZero: this.axisMin === 0,
                     suggestedMin:  this.axisMin,
-                    suggestedMax:  this.axisMax
+                    suggestedMax:  this.axisMax,
+                    ticks: {
+                      stepSize: 0.5
+                  }
                 }
               }
             }
