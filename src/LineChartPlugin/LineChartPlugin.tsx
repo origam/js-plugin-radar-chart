@@ -124,7 +124,7 @@ export class LineChartPlugin implements ISectionPlugin {
   generateData( data: IPluginData, column: string) {
     return data.dataView.tableRows
        .map(row => 
-         data.dataView.getCellText(row, column)
+             data.dataView.getCellValue(row, column)
          );
    }
    
