@@ -173,8 +173,6 @@ export class LineChartPlugin implements ISectionPlugin {
               scales: {
                 x: {
                   ticks: {
-                    minRotation: this.axisMin,
-                    maxRotation: this.axisMax,
                     maxTicksLimit: this.stepSize
                   }
                 },
@@ -182,9 +180,6 @@ export class LineChartPlugin implements ISectionPlugin {
                   beginAtZero: this.axisMin === 0,
                     suggestedMin:  this.axisMin,
                     suggestedMax:  this.axisMax,
-                    ticks: {
-                      stepSize: 0.5
-                  }
                 }
               }
             }
