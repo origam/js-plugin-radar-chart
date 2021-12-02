@@ -173,7 +173,9 @@ export class LineChartPlugin implements ISectionPlugin {
               scales: {
                 x: {
                   ticks: {
-                    maxTicksLimit: this.stepSize
+                    maxTicksLimit: this.stepSize,
+                    maxRotation: 0,
+                    minRotation: 0
                   }
                 },
                 y: {
