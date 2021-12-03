@@ -21,7 +21,25 @@ along with ORIGAM. If not, see <http://www.gnu.org/licenses/>.
 import { observable } from "mobx";
 import React from "react";
 import S from './RadarChartPlugin.module.scss';
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend
+);
 import moment from "moment";
 import {
   ILocalization,
