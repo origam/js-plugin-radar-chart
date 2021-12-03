@@ -144,12 +144,12 @@ export class LineChartPlugin implements ISectionPlugin {
           const index = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
           const color = this.lineColor?.split(";")[index]??"#000000";
           return {
-              label:lineName.name, 
-              data:this.generateData(data, lineName.id),
-              backgroundColor:color??0,
-              borderColor:color??0,
-              borderWidth:1,
-              radius:0
+              label: lineName.name, 
+              data: this.generateData(data, lineName.id),
+              backgroundColor: color??0,
+              borderColor: color??0,
+              borderWidth: 1,
+              radius: 0
           }
         }
       );
@@ -160,8 +160,8 @@ export class LineChartPlugin implements ISectionPlugin {
       <div className={S.chartContainer}>
         <Chart type='line'
           data={{
-            labels:this.labels,
-            datasets:listDataSets,
+            labels: this.labels,
+            datasets: listDataSets,
           }}
           options={
             {
@@ -169,15 +169,15 @@ export class LineChartPlugin implements ISectionPlugin {
               scales:{
                 x: {
                   ticks:{
-                    maxTicksLimit:this.stepSize,
-                    maxRotation:0,
-                    minRotation:0
+                    maxTicksLimit: this.stepSize,
+                    maxRotation: 0,
+                    minRotation: 0
                   }
                 },
                 y: {
-                  beginAtZero:this.axisMin === 0,
-                  suggestedMin:this.axisMin,
-                  suggestedMax:this.axisMax,
+                  beginAtZero: this.axisMin === 0,
+                  suggestedMin: this.axisMin,
+                  suggestedMax: this.axisMax,
                 }
               }
             }
