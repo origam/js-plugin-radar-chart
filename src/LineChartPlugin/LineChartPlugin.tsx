@@ -141,15 +141,15 @@ export class LineChartPlugin implements ISectionPlugin {
       .map(propertyId => 
         {
           const lineName = this.getProperty(data, propertyId.trim());
-          const index  = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
+          const index = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
           const color = this.lineColor?.split(";")[index]??"#000000";
           return {
               label:lineName.name, 
-              data:  this.generateData(data, lineName.id),
-              backgroundColor: color??0,
-              borderColor: color??0,
-              borderWidth: 1,
-              radius: 0
+              data:this.generateData(data, lineName.id),
+              backgroundColor:color??0,
+              borderColor:color??0,
+              borderWidth:1,
+              radius:0
           }
         }
       );
@@ -160,24 +160,24 @@ export class LineChartPlugin implements ISectionPlugin {
       <div className={S.chartContainer}>
         <Chart type='line'
           data={{
-            labels: this.labels,
-            datasets: listDataSets,
+            labels:this.labels,
+            datasets:listDataSets,
           }}
           options={
             {
               maintainAspectRatio: false,
-              scales: {
+              scales:{
                 x: {
-                  ticks: {
-                    maxTicksLimit: this.stepSize,
-                    maxRotation: 0,
-                    minRotation: 0
+                  ticks:{
+                    maxTicksLimit:this.stepSize,
+                    maxRotation:0,
+                    minRotation:0
                   }
                 },
                 y: {
-                  beginAtZero: this.axisMin === 0,
-                  suggestedMin:  this.axisMin,
-                  suggestedMax:  this.axisMax,
+                  beginAtZero:this.axisMin === 0,
+                  suggestedMin:this.axisMin,
+                  suggestedMax:this.axisMax,
                 }
               }
             }
