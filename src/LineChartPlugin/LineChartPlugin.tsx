@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with ORIGAM. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 import { observable } from "mobx";
 import React from "react";
 import S from './LineChartPlugin.module.scss';
@@ -131,11 +130,9 @@ export class LineChartPlugin implements ISectionPlugin {
   getComponent(data: IPluginData, createLocalizer: (localizations: ILocalization[]) => ILocalizer): JSX.Element {
     const localizer = createLocalizer([]);
     moment.locale(localizer.locale)
-
     if (!this.initialized) {
       return <></>;
     }
-
     this.labels = data.dataView.tableRows
     .map(row => this.getUniqueLabel(data, row));
     const listDataSets  = 
@@ -156,7 +153,6 @@ export class LineChartPlugin implements ISectionPlugin {
           }
         }
       );
-
     if (listDataSets.length === 0) {
       return <div className={S.noDataMessageContainer}>{this.noDataMessage}</div>
     }
