@@ -138,34 +138,34 @@ export class LineChartPlugin implements ISectionPlugin {
 
     this.labels = data.dataView.tableRows
     .map(row => this.getUniqueLabel(data, row));
-    const listdatasets  = 
-    this.seriesValueFields!
+    const listDataSets  = 
+      this.seriesValueFields!
       .split(";")
       .map(propertyId => 
         {
           const lineName = this.getProperty(data, propertyId.trim());
-            const index  = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
-            const color = this.lineColor?.split(";")[index]??"#000000";
-            return {
+          const index  = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
+          const color = this.lineColor?.split(";")[index]??"#000000";
+          return {
               label:lineName.name, 
               data:  this.generateData(data, lineName.id),
               backgroundColor: color??0,
               borderColor: color??0,
               borderWidth: 1,
               radius: 0
-            }
+          }
         }
       );
 
-    if (listdatasets.length === 0) {
+    if (listDataSets.length === 0) {
       return <div className={S.noDataMessageContainer}>{this.noDataMessage}</div>
     }
     return (
       <div className={S.chartContainer}>
         <Chart type='line'
           data={{
-            labels: this.labels, //x-asix values
-            datasets: listdatasets,
+            labels: this.labels,
+            datasets: listDataSets,
           }}
           options={
             {
@@ -180,8 +180,8 @@ export class LineChartPlugin implements ISectionPlugin {
                 },
                 y: {
                   beginAtZero: this.axisMin === 0,
-                    suggestedMin:  this.axisMin,
-                    suggestedMax:  this.axisMax,
+                  suggestedMin:  this.axisMin,
+                  suggestedMax:  this.axisMax,
                 }
               }
             }
