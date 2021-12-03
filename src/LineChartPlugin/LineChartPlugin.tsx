@@ -134,7 +134,7 @@ export class LineChartPlugin implements ISectionPlugin {
       return <></>;
     }
     this.labels = data.dataView.tableRows
-    .map(row => this.getUniqueLabel(data, row));
+      .map(row => this.getUniqueLabel(data, row));
     const listDataSets  = 
       this.seriesValueFields!
       .split(";")
