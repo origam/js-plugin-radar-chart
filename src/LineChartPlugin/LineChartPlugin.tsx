@@ -17,29 +17,13 @@ You should have received a copy of the GNU General Public License
 along with ORIGAM. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 import { observable } from "mobx";
 import React from "react";
-import S from './RadarChartPlugin.module.scss';
-import {
-  Chart as ChartJS,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { Radar } from 'react-chartjs-2';
+import S from './LineChartPlugin.module.scss';
+import { Chart } from 'react-chartjs-2';
+import { Chart as ChartJS, LineController,CategoryScale,Legend, LineElement, Tooltip,PointElement, LinearScale } from 'chart.js';
+ChartJS.register(LineController, LineElement,CategoryScale, Legend,PointElement, Tooltip,LinearScale);
 
-ChartJS.register(
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-  Legend
-);
 import moment from "moment";
 import {
   ILocalization,
@@ -58,8 +42,9 @@ const axisMinName = "AxisMin";
 const axisMaxName = "AxisMax";
 const stepSizeName = "StepSize";
 const labelFormatName = "LabelFormat";
+const lineColorName = "LineColor";
 
-export class RadarChartPlugin implements ISectionPlugin {
+export class LineChartPlugin implements ISectionPlugin {
   $type_ISectionPlugin: 1 = 1;
   id: string = ""
   seriesValueFields: string | undefined;
@@ -70,6 +55,7 @@ export class RadarChartPlugin implements ISectionPlugin {
   axisMax: number | undefined;
   stepSize: number | undefined;
   labelFormat: string | undefined;
+  lineColor: string | undefined;
   labels: string[] = [];
 
   @observable
@@ -77,6 +63,7 @@ export class RadarChartPlugin implements ISectionPlugin {
 
   initialize(xmlAttributes: { [key: string]: string }): void {
     this.seriesValueFields = this.getXmlParameter(xmlAttributes, seriesValueFieldsName);
+    this.lineColor = this.getXmlParameter(xmlAttributes, lineColorName);
     this.seriesLabelField = this.getXmlParameter(xmlAttributes, seriesLabelFieldName);
     this.noDataMessage = this.getXmlParameter(xmlAttributes, noDataMessageName);
     this.filterField = xmlAttributes[filterFieldName];
@@ -133,56 +120,69 @@ export class RadarChartPlugin implements ISectionPlugin {
     return property;
   }
 
+  generateData( data: IPluginData, column: string) {
+    return data.dataView.tableRows
+       .map(row => 
+             data.dataView.getCellValue(row, column)
+         );
+   }
+   
   getComponent(data: IPluginData, createLocalizer: (localizations: ILocalization[]) => ILocalizer): JSX.Element {
     const localizer = createLocalizer([]);
     moment.locale(localizer.locale)
-
     if (!this.initialized) {
       return <></>;
     }
-
-    const properties = this.seriesValueFields!
+    this.labels = data.dataView.tableRows
+      .map(row => this.getUniqueLabel(data, row));
+    const listDataSets  = 
+      this.seriesValueFields!
       .split(";")
-      .map(propertyId => this.getProperty(data, propertyId.trim()))
-    this.labels = [];
-    const dataSets = data.dataView.tableRows
-      .filter(row => !this.filterField || data.dataView.getCellValue(row, this.filterField))
-      .map(row => {
-        const index = data.dataView.tableRows.indexOf(row);
-        const color = SeriesColor.getBySeriesNumber(index);
-        return {
-          label: this.getUniqueLabel(data, row), // it is important to make the labels unique, otherwise the Radar component throws reference exceptions. Probably a bug in react-chartjs-2
-          data: properties.map(prop => data.dataView.getCellValue(row, prop.id)),
-          backgroundColor: color.background,
-          borderColor: color.border,
-          borderWidth: 1,
+      .map(propertyId => 
+        {
+          const lineName = this.getProperty(data, propertyId.trim());
+          const index = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
+          const color = this.lineColor?.split(";")[index]??"#000000";
+          return {
+              label: lineName.name, 
+              data: this.generateData(data, lineName.id),
+              backgroundColor: color??0,
+              borderColor: color??0,
+              borderWidth: 1,
+              radius: 0
+          }
         }
-      })
-    if (dataSets.length === 0) {
+      );
+    if (listDataSets.length === 0) {
       return <div className={S.noDataMessageContainer}>{this.noDataMessage}</div>
     }
     return (
       <div className={S.chartContainer}>
-        <Radar
+        <Chart type='line'
           data={{
-            labels: properties.map(prop => prop.name),
-            datasets: dataSets,
+            labels: this.labels,
+            datasets: listDataSets,
           }}
           options={
             {
               maintainAspectRatio: false,
-              scales: {
-                r: {
+              scales:{
+                x: {
+                  ticks:{
+                    maxTicksLimit: this.stepSize,
+                    maxRotation: 0,
+                    minRotation: 0
+                  }
+                },
+                y: {
                   beginAtZero: this.axisMin === 0,
                   suggestedMin: this.axisMin,
                   suggestedMax: this.axisMax,
-                  ticks: {
-                    stepSize: this.stepSize
-                  }
                 }
               }
             }
           }
+          className={S.chart}
         />
       </div>
     );
@@ -190,37 +190,4 @@ export class RadarChartPlugin implements ISectionPlugin {
 
   @observable
   getScreenParameters: (() => { [parameter: string]: string }) | undefined;
-}
-
-
-class SeriesColor {
-
-  static seriesColorsRGB = [
-    new SeriesColor(255, 99, 132),
-    new SeriesColor(234, 99, 255),
-    new SeriesColor(99, 112, 255),
-    new SeriesColor(99, 252, 255),
-    new SeriesColor(168, 164, 50),
-    new SeriesColor(99, 255, 102),
-    new SeriesColor(247, 161, 0),
-  ]
-
-  static getBySeriesNumber(seriesNumber: number) {
-    return SeriesColor.seriesColorsRGB[seriesNumber % SeriesColor.seriesColorsRGB.length];
-  }
-
-  constructor(
-    private red: number,
-    private green: number,
-    private blue: number) {
-
-  }
-
-  get background() {
-    return `rgba(${this.red}, ${this.green}, ${this.blue}, 0.2)`
-  }
-
-  get border() {
-    return `rgba(${this.red}, ${this.green}, ${this.blue}, 1)`
-  }
 }

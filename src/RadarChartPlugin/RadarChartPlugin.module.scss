@@ -19,6 +19,7 @@ along with ORIGAM. If not, see <http://www.gnu.org/licenses/>.
 
 .chartContainer {
   height: 100%;
+  flex-grow: 1;
   background-color: var(--background1);
 }
 
