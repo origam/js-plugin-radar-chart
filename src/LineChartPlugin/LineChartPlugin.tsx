@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with ORIGAM. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 import { observable } from "mobx";
 import React from "react";
 import S from './LineChartPlugin.module.scss';
@@ -124,62 +123,61 @@ export class LineChartPlugin implements ISectionPlugin {
   generateData( data: IPluginData, column: string) {
     return data.dataView.tableRows
        .map(row => 
-         data.dataView.getCellText(row, column)
+             data.dataView.getCellValue(row, column)
          );
    }
    
   getComponent(data: IPluginData, createLocalizer: (localizations: ILocalization[]) => ILocalizer): JSX.Element {
     const localizer = createLocalizer([]);
     moment.locale(localizer.locale)
-
     if (!this.initialized) {
       return <></>;
     }
-
     this.labels = data.dataView.tableRows
-    .map(row => this.getUniqueLabel(data, row));
-    const listdatasets  = 
-    this.seriesValueFields!
+      .map(row => this.getUniqueLabel(data, row));
+    const listDataSets  = 
+      this.seriesValueFields!
       .split(";")
       .map(propertyId => 
         {
           const lineName = this.getProperty(data, propertyId.trim());
-            const index  = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
-            const color = this.lineColor?.split(";")[index]??"#000000";
-            return {
-              label:lineName.name, 
-              data:  this.generateData(data, lineName.id),
+          const index = this.seriesValueFields?.split(";").indexOf(propertyId)??0;
+          const color = this.lineColor?.split(";")[index]??"#000000";
+          return {
+              label: lineName.name, 
+              data: this.generateData(data, lineName.id),
               backgroundColor: color??0,
               borderColor: color??0,
               borderWidth: 1,
               radius: 0
-            }
+          }
         }
       );
-
-    if (listdatasets.length === 0) {
+    if (listDataSets.length === 0) {
       return <div className={S.noDataMessageContainer}>{this.noDataMessage}</div>
     }
     return (
       <div className={S.chartContainer}>
         <Chart type='line'
           data={{
-            labels: this.labels, //x-asix values
-            datasets: listdatasets,
+            labels: this.labels,
+            datasets: listDataSets,
           }}
           options={
             {
               maintainAspectRatio: false,
-              scales: {
+              scales:{
                 x: {
-                  ticks: {
-                    maxTicksLimit: this.stepSize
+                  ticks:{
+                    maxTicksLimit: this.stepSize,
+                    maxRotation: 0,
+                    minRotation: 0
                   }
                 },
                 y: {
                   beginAtZero: this.axisMin === 0,
-                    suggestedMin:  this.axisMin,
-                    suggestedMax:  this.axisMax,
+                  suggestedMin: this.axisMin,
+                  suggestedMax: this.axisMax,
                 }
               }
             }
