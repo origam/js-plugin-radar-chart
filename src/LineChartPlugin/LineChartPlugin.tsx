@@ -28,10 +28,10 @@ import moment from "moment";
 import {
   ILocalization,
   ILocalizer,
-  IPluginData,
+  ISectionPluginData,
   IPluginTableRow,
   ISectionPlugin
-} from "@origam/plugin-interfaces";
+} from "@origam/plugins";
 import { csToMomentFormat } from "@origam/utils";
 
 const seriesLabelFieldName = "SeriesLabelField";
@@ -74,6 +74,9 @@ export class LineChartPlugin implements ISectionPlugin {
     this.initialized = true;
   }
 
+  onSessionRefreshed(): void {
+  }
+
   getXmlParameter(xmlAttributes: { [key: string]: string }, parameterName: string) {
     if (!xmlAttributes[parameterName]) {
       throw new Error(`Parameter ${parameterName} was not found. Cannot plot anything.`)
@@ -90,7 +93,7 @@ export class LineChartPlugin implements ISectionPlugin {
     return (isNaN(number) || number < 0) ? undefined : number;
   }
 
-  getLabel(data: IPluginData, row: IPluginTableRow): string {
+  getLabel(data: ISectionPluginData, row: IPluginTableRow): string {
     const property = this.getProperty(data, this.seriesLabelField!)
 
     let cellValue = data.dataView.getCellValue(row, property.id);
@@ -102,7 +105,7 @@ export class LineChartPlugin implements ISectionPlugin {
     }
   }
 
-  getUniqueLabel(data: IPluginData, row: IPluginTableRow) {
+  getUniqueLabel(data: ISectionPluginData, row: IPluginTableRow) {
     let newLabel = this.getLabel(data, row);
     let numberOfDuplicates = this.labels.filter(label => label === newLabel).length;
     if (numberOfDuplicates > 0) {
@@ -112,7 +115,7 @@ export class LineChartPlugin implements ISectionPlugin {
     return newLabel;
   }
 
-  getProperty(data: IPluginData, propertyId: string) {
+  getProperty(data: ISectionPluginData, propertyId: string) {
     const property = data.dataView.properties.find(prop => prop.id === propertyId)
     if (!property) {
       throw new Error(`Property ${propertyId} was not found`)
@@ -120,14 +123,14 @@ export class LineChartPlugin implements ISectionPlugin {
     return property;
   }
 
-  generateData( data: IPluginData, column: string) {
+  generateData( data: ISectionPluginData, column: string) {
     return data.dataView.tableRows
        .map(row => 
              data.dataView.getCellValue(row, column)
          );
    }
    
-  getComponent(data: IPluginData, createLocalizer: (localizations: ILocalization[]) => ILocalizer): JSX.Element {
+  getComponent(data: ISectionPluginData, createLocalizer: (localizations: ILocalization[]) => ILocalizer): JSX.Element {
     const localizer = createLocalizer([]);
     moment.locale(localizer.locale)
     if (!this.initialized) {
