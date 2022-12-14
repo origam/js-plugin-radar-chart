@@ -74,6 +74,7 @@ export class RadarChartPlugin implements ISectionPlugin {
 
   @observable
   initialized = false;
+  createLocalizer: ((localizations: ILocalization[]) => ILocalizer) | undefined;
 
   initialize(xmlAttributes: { [key: string]: string }): void {
     this.seriesValueFields = this.getXmlParameter(xmlAttributes, seriesValueFieldsName);
@@ -112,6 +113,11 @@ export class RadarChartPlugin implements ISectionPlugin {
     let cellValue = data.dataView.getCellValue(row, property.id);
     if (property.type === "Date") {
       const format = csToMomentFormat(this.labelFormat) ?? property.momentFormatterPattern
+      if(this.createLocalizer)
+      {
+        const localizer = this.createLocalizer([]);
+        return moment(cellValue).locale(localizer.locale).format(format);
+      }
       return moment(cellValue).format(format);
     } else {
       return (cellValue ?? "").toString();
@@ -137,8 +143,7 @@ export class RadarChartPlugin implements ISectionPlugin {
   }
 
   getComponent(data: ISectionPluginData, createLocalizer: (localizations: ILocalization[]) => ILocalizer): JSX.Element {
-    const localizer = createLocalizer([]);
-    moment.locale(localizer.locale)
+    this.createLocalizer = createLocalizer;
 
     if (!this.initialized) {
       return <></>;
