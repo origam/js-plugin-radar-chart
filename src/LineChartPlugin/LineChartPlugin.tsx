@@ -187,6 +187,15 @@ export class LineChartPlugin implements ISectionPlugin {
                   suggestedMin: this.axisMin,
                   suggestedMax: this.axisMax,
                 }
+              },
+              plugins:
+              {
+                tooltip:
+                {
+                  mode: 'index',
+                  axis: 'xy',
+                  intersect: false
+                }
               }
             }
           }
