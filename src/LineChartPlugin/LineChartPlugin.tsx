@@ -25,14 +25,13 @@ import { Chart as ChartJS, LineController,CategoryScale,Legend, LineElement, Too
 ChartJS.register(LineController, LineElement,CategoryScale, Legend,PointElement, Tooltip,LinearScale);
 
 import moment from "moment";
-import {
-  ILocalization,
-  ILocalizer,
-  ISectionPluginData,
-  IPluginTableRow,
-  ISectionPlugin
-} from "@origam/plugins";
-import { csToMomentFormat } from "@origam/utils";
+import { ISectionPlugin } from "plugins/interfaces/ISectionPlugin";
+import { ISectionPluginData } from "plugins/interfaces/ISectionPluginData";
+import { IPluginTableRow } from "plugins/interfaces/IPluginTableRow";
+import { ILocalization } from "plugins/interfaces/ILocalization";
+import { ILocalizer } from "plugins/interfaces/ILocalizer";
+
+import { csToMomentFormat } from "utils/dateConversion";
 
 const seriesLabelFieldName = "SeriesLabelField";
 const seriesValueFieldsName = "SeriesValueFields";
@@ -122,7 +121,7 @@ export class LineChartPlugin implements ISectionPlugin {
   }
 
   getProperty(data: ISectionPluginData, propertyId: string) {
-    const property = data.dataView.properties.find(prop => prop.id === propertyId)
+    const property = data.dataView.properties.find((prop: { id: string; }) => prop.id === propertyId)
     if (!property) {
       throw new Error(`Property ${propertyId} was not found`)
     }
@@ -131,7 +130,7 @@ export class LineChartPlugin implements ISectionPlugin {
 
   generateData( data: ISectionPluginData, column: string) {
     return data.dataView.tableRows
-       .map(row => 
+       .map((row: any) => 
              data.dataView.getCellValue(row, column)
          );
    }
@@ -142,7 +141,7 @@ export class LineChartPlugin implements ISectionPlugin {
       return <></>;
     }
     this.labels = data.dataView.tableRows
-      .map(row => this.getUniqueLabel(data, row));
+      .map((row: any) => this.getUniqueLabel(data, row));
     const listDataSets  = 
       this.seriesValueFields!
       .split(";")
