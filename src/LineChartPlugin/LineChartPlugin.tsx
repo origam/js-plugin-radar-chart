@@ -31,7 +31,7 @@ import { IPluginTableRow } from "plugins/interfaces/IPluginTableRow";
 import { ILocalization } from "plugins/interfaces/ILocalization";
 import { ILocalizer } from "plugins/interfaces/ILocalizer";
 
-import { csToMomentFormat } from "@origam/utils";
+import { csToMomentFormat } from "utils/dateConversion";
 
 const seriesLabelFieldName = "SeriesLabelField";
 const seriesValueFieldsName = "SeriesValueFields";
