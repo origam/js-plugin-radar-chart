@@ -41,13 +41,11 @@ ChartJS.register(
   Legend
 );
 import moment from "moment";
-import {
-  ILocalization,
-  ILocalizer,
-  ISectionPluginData,
-  IPluginTableRow,
-  ISectionPlugin
-} from "@origam/plugins";
+import { ISectionPlugin } from "plugins/interfaces/ISectionPlugin";
+import { IPluginTableRow } from "plugins/interfaces/IPluginTableRow";
+import { ISectionPluginData } from "plugins/interfaces/ISectionPluginData";
+import { ILocalization } from "plugins/interfaces/ILocalization";
+import { ILocalizer } from "plugins/interfaces/ILocalizer";
 import { csToMomentFormat } from "@origam/utils";
 
 const seriesLabelFieldName = "SeriesLabelField";
